@@ -15,5 +15,6 @@ const config: Config = {
     },
   },
   plugins: [],
+  // Make sure there's no darkMode setting here forcing dark mode
 };
 export default config;

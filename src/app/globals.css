@@ -3,25 +3,84 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #ffffff;
+  --background-overlay: rgba(0, 0, 0, 0.3);
+  --form-bg: rgba(255, 255, 255, 0.15);
+  --form-text: #ffffff;
+  --form-input-bg: rgba(255, 255, 255, 0.2);
+  --form-input-text: #ffffff;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Geist Sans', Arial, Helvetica, sans-serif;
+  background-image: url('/nature-overlay.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
 }
 
+/* Existing styles */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#planner {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.bg-blur {
+  backdrop-filter: blur(8px);
+  background-color: var(--background-overlay);
+}
+
+/* Header and Footer styles */
+header,
+footer {
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+}
+
+/* Additional styles for better contrast and readability */
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.bg-translucent {
+  background-color: var(--form-bg);
+  backdrop-filter: blur(10px);
+}
+
+.form-input {
+  background-color: var(--form-input-bg);
+  color: var(--form-input-text);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-label {
+  color: var(--form-text);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
