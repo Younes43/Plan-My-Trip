@@ -10,13 +10,38 @@ const TravelPlannerForm = () => {
   const [budget, setBudget] = useState('');
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/plan?destination=${destination}&startDate=${startDate}&endDate=${endDate}&budget=${budget}`);
+    const requestData = {
+      destination,
+      startDate,
+      endDate,
+      budget
+    };
+
+    try {
+      const response = await fetch('/api/generatePlan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate plan');
+      }
+
+      const data = await response.json();
+      router.push(`/plan?destination=${encodeURIComponent(destination)}&startDate=${startDate}&endDate=${endDate}&budget=${budget}`);
+    } catch (error) {
+      console.error('Error generating plan:', error);
+      // Handle error (e.g., show an error message to the user)
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto my-10 bg-translucent p-8 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300" id="planner">
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto my-10 bg-translucent p-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl" id="planner">
       <div className="mb-4">
         <label htmlFor="destination" className="block form-label font-bold mb-2">
           Destination
@@ -26,7 +51,7 @@ const TravelPlannerForm = () => {
           id="destination"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out hover:shadow-md"
+          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
           required
         />
       </div>
@@ -39,7 +64,7 @@ const TravelPlannerForm = () => {
           id="startDate"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out hover:shadow-md"
+          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
           required
         />
       </div>
@@ -52,7 +77,7 @@ const TravelPlannerForm = () => {
           id="endDate"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out hover:shadow-md"
+          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
           required
         />
       </div>
@@ -64,7 +89,7 @@ const TravelPlannerForm = () => {
           id="budget"
           value={budget}
           onChange={(e) => setBudget(e.target.value)}
-          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out hover:shadow-md"
+          className="w-full px-3 py-2 form-input rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
           required
         >
           <option value="">Select a budget range</option>
@@ -75,7 +100,7 @@ const TravelPlannerForm = () => {
       </div>
       <button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white py-2 px-4 rounded-lg hover:from-blue-700 hover:to-teal-600 transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+        className="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white py-2 px-4 rounded-lg hover:from-blue-700 hover:to-teal-600 transition-all duration-300 ease-in-out"
       >
         Generate Trip Plan
       </button>
