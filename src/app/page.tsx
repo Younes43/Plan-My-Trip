@@ -1,11 +1,5 @@
-import HeroSection from './components/HeroSection';
-import TravelPlannerForm from './components/TravelPlannerForm';
+import LandingPage from './components/LandingPage';
 
 export default function Home() {
-  return (
-    <div className="container mx-auto px-4">
-      <HeroSection />
-      <TravelPlannerForm />
-    </div>
-  );
+  return <LandingPage />;
 }

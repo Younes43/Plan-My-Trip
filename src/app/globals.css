@@ -3,31 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #ffffff;
-  --background-overlay: rgba(0, 0, 0, 0.3);
-  --form-bg: rgba(255, 255, 255, 0.15);
-  --form-text: #ffffff;
-  --form-input-bg: rgba(255, 255, 255, 0.2);
-  --form-input-text: #ffffff;
+  --foreground: #333333;
+  --background: #ffffff;
 }
 
 body {
   color: var(--foreground);
-  font-family: 'Geist Sans', Arial, Helvetica, sans-serif;
-  background-image: url('/nature-overlay.jpg');
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  min-height: 100vh;
+  background: var(--background);
+  font-family: 'Geist Sans', Arial, sans-serif;
 }
 
-/* Existing styles */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
+/* Existing styles */
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "./components/Header";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -16,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AI Travel Planner",
-  description: "Plan your perfect trip with AI assistance",
+  title: "Journeya Travel",
+  description: "Discover amazing places at exclusive deals",
 };
 
 export default function RootLayout({
@@ -30,14 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="bg-image"></div>
-        <div className="main-content">
-          <Header />
-          <main className="min-h-screen py-8">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        {/* <Header /> */}
+        {children}
       </body>
     </html>
   );
