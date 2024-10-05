@@ -3,7 +3,6 @@
 import Header from './Header';
 import HeroSection from './HeroSection';
 import DestinationGallery from './DestinationGallery';
-import TravelPlannerForm from './TravelPlannerForm';
 import AboutSection from './AboutSection';
 import Footer from './Footer';
 

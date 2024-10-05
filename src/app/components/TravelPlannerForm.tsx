@@ -38,9 +38,9 @@ const TravelPlannerForm = () => {
     setShowCalendar(false);
   };
 
-  const handleBudgetChange = (newValues: number[]) => {
-    setBudget(newValues);
-  };
+  // const handleBudgetChange = (newValues: number[]) => {
+  //   setBudget(newValues);
+  // };
 
   // This is a simple array of destinations. In a real app, you'd probably fetch this from an API.
   const popularDestinations = [

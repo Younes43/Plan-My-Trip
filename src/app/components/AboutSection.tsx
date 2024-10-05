@@ -33,7 +33,7 @@ const AboutSection = () => {
         <div className="md:w-3/5 md:pl-12">
           <h2 className="text-4xl font-bold mb-6">Discover the World with Journey AI</h2>
           <p className="text-gray-600 mb-6">
-            At Journey AI, we believe that travel is more than just visiting new places. It's about creating unforgettable experiences, broadening your horizons, and connecting with diverse cultures around the globe.
+            At Journey AI, we believe that travel is more than just visiting new places. It&apos;s about creating unforgettable experiences, broadening your horizons, and connecting with diverse cultures around the globe.
           </p>
           <ul className="space-y-2">
             <li className="flex items-center">
