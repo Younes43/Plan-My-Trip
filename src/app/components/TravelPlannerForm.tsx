@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Search, Calendar, DollarSign } from 'lucide-react';
 import { DateRange } from 'react-date-range';
 import { Range, getTrackBackground } from 'react-range';
@@ -18,6 +18,10 @@ const TravelPlannerForm = () => {
     }
   ]);
   const [budget, setBudget] = useState([500, 5000]);
+  const [destination, setDestination] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionRef = useRef<HTMLDivElement>(null);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -38,16 +42,75 @@ const TravelPlannerForm = () => {
     setBudget(newValues);
   };
 
+  // This is a simple array of destinations. In a real app, you'd probably fetch this from an API.
+  const popularDestinations = [
+    'New York, USA', 'Paris, France', 'Tokyo, Japan', 'London, UK', 'Rome, Italy',
+    'Sydney, Australia', 'Barcelona, Spain', 'Amsterdam, Netherlands', 'Dubai, UAE',
+    'Singapore', 'Hong Kong', 'Berlin, Germany', 'Prague, Czech Republic', 'Vienna, Austria',
+    'Bangkok, Thailand', 'Istanbul, Turkey', 'Rio de Janeiro, Brazil', 'Cape Town, South Africa'
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleDestinationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDestination(value);
+    if (value.length > 0) {
+      const filtered = popularDestinations.filter(dest => 
+        dest.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setDestination(suggestion);
+    setShowSuggestions(false);
+  };
+
   return (
     <div className="w-full max-w-6xl relative">
       <div className="bg-white rounded-full p-2">
         <form className="flex items-center">
-          <div className="flex-1 px-5">
+          <div className="flex-1 px-5 relative">
             <input
               className="w-full py-2 text-gray-700 leading-tight focus:outline-none"
               placeholder='Where do you want to go?'
               type="text"
+              value={destination}
+              onChange={handleDestinationChange}
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <div 
+                ref={suggestionRef}
+                className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto"
+              >
+                {suggestions.map((suggestion, index) => (
+                  <div 
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    {suggestion}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex-1 px-5 border-l border-r relative">
             <button

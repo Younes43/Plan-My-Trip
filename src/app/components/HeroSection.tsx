@@ -12,8 +12,8 @@ const HeroSection = () => {
       />
       <div className="absolute inset-0 bg-black bg-opacity-50" />
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4 pt-20 ">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center -mt-44">Let's travel and explore</h1>
-        <p className="text-xl md:text-2xl mb-12 text-center">Discover amazing places at exclusive deals</p>
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center -mt-44">Let AI Plan Your Next Adventure</h1>
+        <p className="text-xl md:text-2xl mb-12 text-center">Discover Amazing Places with Personalized Itineraries</p>
         <div className="w-full max-w-6xl mx-auto -mt-8">
           <TravelPlannerForm />
         </div>

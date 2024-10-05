@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Certainly! Here's the README in Markdown format without the code snippets:
 
-## Getting Started
+# Journey AI - AI-Powered Travel Planner
 
-First, run the development server:
+Journey AI is an innovative travel planning application that leverages artificial intelligence to create personalized trip itineraries based on your budget and preferences. Integrated with OpenAI's powerful language model, Journey AI offers tailored travel recommendations, including accommodations, activities, and transportation options. Future integrations with Google Maps, booking platforms, and activity providers will further enhance the travel planning experience.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Demo
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<img src="demo_journey_ai.gif" alt="Journey AI Demo" width="1000"/>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- AI-powered trip planning
+- Budget-based itinerary creation
+- Personalized travel recommendations
+- Integration with OpenAI
+- Responsive design for various devices
+- User-friendly interface
 
-## Learn More
+## Quick Start
 
-To learn more about Next.js, take a look at the following resources:
+To run Journey AI locally, follow these steps:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Clone the repository:
+   ```
+   git clone https://github.com/Younes43/Plan-My-Trip.git
+   cd Plan-My-Trip
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-## Deploy on Vercel
+3. Set up environment variables:
+   Create a `.env.local` file in the root directory and add your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Run the development server:
+   ```
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## Technologies Used
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- OpenAI API
+
+## Project Structure
+
+The main components of the project are:
+
+- `src/app/page.tsx`: The main landing page component
+- `src/app/components/`: Directory containing all React components
+- `src/app/api/generatePlan/route.tsx`: API route for generating travel plans
+
+## Key Components
+
+### TravelPlannerForm
+
+This component allows users to input their travel preferences, including destination, date range, and budget.
+
+### TripPlan
+
+This component displays the generated travel itinerary, including daily activities, accommodations, and transportation options.
+
+## API Integration
+
+The application integrates with OpenAI's API to generate travel plans based on user input.
+
+## Styling
+
+The project uses Tailwind CSS for styling, with global styles defined in `src/app/globals.css`.
+
+## Contributing
+
+Contributions to Journey AI are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Future Enhancements
+
+- Integration with Google Maps for location-based services
+- Connecting with booking platforms for real-time availability and pricing
+- Incorporating activity providers for seamless experience booking
+- User authentication and profile management
+- Saving and sharing travel plans
+
+## Support
+
+If you encounter any issues or have questions, please file an issue on the GitHub repository.

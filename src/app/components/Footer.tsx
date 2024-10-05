@@ -23,7 +23,7 @@ const Footer = () => {
                 <path d="m2 17 10 5 10-5" />
                 <path d="m2 12 10 5 10-5" />
               </svg>
-              <span className="font-bold text-xl">JOURNEYA TRAVEL</span>
+              <span className="font-bold text-xl">JOURNEY AI</span>
             </div>
             <p className="text-sm mb-4">Discover the world with us. Your journey begins here.</p>
             <div className="flex space-x-4">
