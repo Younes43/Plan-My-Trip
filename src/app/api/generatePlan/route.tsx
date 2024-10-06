@@ -4,8 +4,6 @@ import { TravelPlanRequest } from '@/types';
 import fs from 'fs/promises';
 import path from 'path';
 
-export const runtime = 'edge';
-
 const logApiRequest = async (logData: Record<string, unknown>) => {
   const logPath = path.join(process.cwd(), 'logs', 'api_requests.log');
   const logEntry = JSON.stringify(logData, null, 2) + '\n\n';
