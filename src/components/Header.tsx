@@ -34,7 +34,7 @@ const Header = () => {
             <path d="m2 17 10 5 10-5" />
             <path d="m2 12 10 5 10-5" />
           </svg>
-          <span className="text-[#4A0E78] font-bold text-xl">JOURNEY AI</span>
+          <span className="text-[#4A0E78] font-bold text-xl">JOURNIFY AI</span>
         </div>
         <nav className="hidden md:flex space-x-6">
           <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => router.push('/')}>

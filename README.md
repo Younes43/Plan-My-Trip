@@ -2,7 +2,7 @@ Certainly! Here's the README in Markdown format without the code snippets:
 
 # Journey AI - AI-Powered Travel Planner
 
-Journey AI is an innovative travel planning application that leverages artificial intelligence to create personalized trip itineraries based on your budget and preferences. Integrated with OpenAI's powerful language model, Journey AI offers tailored travel recommendations, including accommodations, activities, and transportation options. Future integrations with Google Maps, booking platforms, and activity providers will further enhance the travel planning experience.
+Journify AI is an innovative travel planning application that leverages artificial intelligence to create personalized trip itineraries based on your budget and preferences. Integrated with OpenAI's powerful language model, Journify AI offers tailored travel recommendations, including accommodations, activities, and transportation options. Future integrations with Google Maps, booking platforms, and activity providers will further enhance the travel planning experience.
 
 ## Demo
 

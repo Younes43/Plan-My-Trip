@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Journey AI",
+  title: "Journify AI",
   description: "Discover amazing places at exclusive deals",
 };
 

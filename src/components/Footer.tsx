@@ -23,7 +23,7 @@ const Footer = () => {
                 <path d="m2 17 10 5 10-5" />
                 <path d="m2 12 10 5 10-5" />
               </svg>
-              <span className="font-bold text-xl">JOURNEY AI</span>
+              <span className="font-bold text-xl">JOURNIFY AI</span>
             </div>
             <p className="text-sm mb-4">Discover the world with us. Your journey begins here.</p>
             <div className="flex space-x-4">
@@ -64,7 +64,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-2" />
-                <span>info@journeya.com</span>
+                <span>info@journifyai.com</span>
               </li>
             </ul>
           </div>
@@ -87,7 +87,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-[#3A0B5E] mt-8 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Journeya Travel. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} JOURNIFY AI. All rights reserved.</p>
         </div>
       </div>
     </footer>
