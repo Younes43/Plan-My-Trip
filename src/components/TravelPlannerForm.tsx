@@ -6,8 +6,10 @@ import { DateRange } from 'react-date-range';
 import { Range, getTrackBackground } from 'react-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import { useRouter } from 'next/navigation';
 
 const TravelPlannerForm = () => {
+  const router = useRouter();
   const [showCalendar, setShowCalendar] = useState(false);
   const [showBudget, setShowBudget] = useState(false);
   const [dateRange, setDateRange] = useState([
@@ -83,10 +85,19 @@ const TravelPlannerForm = () => {
     setShowSuggestions(false);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const startDate = dateRange[0].startDate.toISOString().split('T')[0];
+    const endDate = dateRange[0].endDate.toISOString().split('T')[0];
+    const [budgetMin, budgetMax] = budget;
+
+    router.push(`/plan?destination=${encodeURIComponent(destination)}&startDate=${startDate}&endDate=${endDate}&budgetMin=${budgetMin}&budgetMax=${budgetMax}`);
+  };
+
   return (
     <div className="w-full max-w-6xl relative">
       <div className="bg-white rounded-full p-2">
-        <form className="flex items-center">
+        <form className="flex items-center" onSubmit={handleSubmit}>
           <div className="flex-1 px-5 relative">
             <input
               className="w-full py-2 text-gray-700 leading-tight focus:outline-none"

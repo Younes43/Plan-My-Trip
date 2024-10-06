@@ -1,11 +1,23 @@
-import Link from 'next/link';
 import { Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
+  const router = useRouter();
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <header className="bg-white py-4">
+    <header className="bg-white py-4 fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+        <div 
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => router.push('/')}
+        >
           <svg
             className="w-8 h-8 text-[#4A0E78]"
             fill="none"
@@ -25,18 +37,18 @@ const Header = () => {
           <span className="text-[#4A0E78] font-bold text-xl">JOURNEY AI</span>
         </div>
         <nav className="hidden md:flex space-x-6">
-          <Link className="text-gray-600 hover:text-[#4A0E78]" href="#">
+          <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => router.push('/')}>
             Home
-          </Link>
-          <Link className="text-gray-600 hover:text-[#4A0E78]" href="#">
+          </button>
+          <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => scrollToSection('about')}>
             About
-          </Link>
-          <Link className="text-gray-600 hover:text-[#4A0E78]" href="#">
+          </button>
+          <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => scrollToSection('destinations')}>
             Destination
-          </Link>
-          <Link className="text-gray-600 hover:text-[#4A0E78]" href="#">
+          </button>
+          <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => scrollToSection('contact')}>
             Contact
-          </Link>
+          </button>
         </nav>
         <button className="p-2 rounded-full bg-[#4A0E78] text-white">
           <Search className="w-5 h-5" />

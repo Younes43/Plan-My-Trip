@@ -1,57 +1,118 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import TripPlan from '@/app/components/TripPlan';
-import LoadingAnimation from '@/app/components/LoadingAnimation';
+import TripPlan from '@/components/TripPlan';
+import LoadingAnimation from '@/components/LoadingAnimation';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { TripPlan as TripPlanType, TravelPlanRequest } from '@/types';
+import Image from 'next/image';
 
-export default function PlanPage() {
-  const searchParams = useSearchParams();
-  const [plan, setPlan] = useState(null);
-  const [loading, setLoading] = useState(true);
+const useGeneratePlan = (searchParams: URLSearchParams) => {
+  const [plan, setPlan] = useState<TripPlanType | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const destination = searchParams.get('destination');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const budget = searchParams.get('budget');
-
     const generatePlan = async () => {
       setLoading(true);
+      setError(null);
       try {
+        const request: TravelPlanRequest = {
+          destination: searchParams.get('destination') || '',
+          startDate: searchParams.get('startDate') || '',
+          endDate: searchParams.get('endDate') || '',
+          budgetMin: Number(searchParams.get('budgetMin')) || 0,
+          budgetMax: Number(searchParams.get('budgetMax')) || 0,
+        };
+
         const response = await fetch('/api/generatePlan', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ destination, startDate, endDate, budget }),
+          body: JSON.stringify(request),
         });
+
         if (!response.ok) {
           throw new Error('Failed to generate plan');
         }
+
         const data = await response.json();
         setPlan(data.plan);
       } catch (error) {
         console.error('Error generating plan:', error);
-        // You might want to set an error state here and display it to the user
+        setError('An error occurred while generating your travel plan. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    generatePlan();
+    if (
+      searchParams.get('destination') &&
+      searchParams.get('startDate') &&
+      searchParams.get('endDate') &&
+      searchParams.get('budgetMin') &&
+      searchParams.get('budgetMax')
+    ) {
+      generatePlan();
+    } else {
+      setLoading(false);
+      setError('Missing required parameters. Please fill out all fields in the form.');
+    }
   }, [searchParams]);
 
-  if (loading) {
-    return <LoadingAnimation />;
-  }
+  return { plan, loading, error };
+};
+
+const PlanContent = () => {
+  const searchParams = useSearchParams();
+  const { plan, loading, error } = useGeneratePlan(searchParams);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-900 to-teal-800 py-12">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-8 text-white text-center">Your Travel Plan</h1>
-        {plan && <TripPlan plan={plan} />}
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-grow">
+        <div className="relative h-[300px]">
+          <Image
+            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80"
+            alt="Destination"
+            className="absolute inset-0 w-full h-full object-cover"
+            layout="fill"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-50" />
+          <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center">Destination Detail</h1>
+            <p className="text-xl md:text-2xl mb-12 text-center">Home / Destination Detail</p>
+          </div>
+        </div>
+        <div className="container mx-auto px-4 py-12">
+          {loading ? (
+            <LoadingAnimation />
+          ) : error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <strong className="font-bold">Error: </strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+          ) : plan ? (
+            <>
+              <h2 className="text-3xl font-bold text-center mb-8">Your Travel Itinerary</h2>
+              <TripPlan plan={plan} />
+            </>
+          ) : null}
+        </div>
+      </main>
+      <Footer />
     </div>
+  );
+};
+
+export default function PlanPage() {
+  return (
+    <Suspense fallback={<LoadingAnimation />}>
+      <PlanContent />
+    </Suspense>
   );
 }
