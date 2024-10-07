@@ -44,7 +44,7 @@ const Header = () => {
             About
           </button>
           <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => scrollToSection('destinations')}>
-            Destination
+            Destinations
           </button>
           <button className="text-gray-600 hover:text-[#4A0E78]" onClick={() => scrollToSection('contact')}>
             Contact
