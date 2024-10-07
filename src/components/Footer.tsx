@@ -26,7 +26,7 @@ const Footer = () => {
               <span className="font-bold text-xl">JOURNIFY AI</span>
             </div>
             <p className="text-sm mb-4">Discover the world with us. Your journey begins here.</p>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <a href="#" className="hover:text-gray-300">
                 <Facebook className="w-5 h-5" />
               </a>
@@ -39,15 +39,15 @@ const Footer = () => {
               <a href="#" className="hover:text-gray-300">
                 <Youtube className="w-5 h-5" />
               </a>
-            </div>
+            </div> */}
           </div>
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><a href="#" className="hover:text-gray-300">About Us</a></li>
               <li><a href="#" className="hover:text-gray-300">Destinations</a></li>
-              <li><a href="#" className="hover:text-gray-300">Tours</a></li>
-              <li><a href="#" className="hover:text-gray-300">Blog</a></li>
+              {/* <li><a href="#" className="hover:text-gray-300">Tours</a></li> */}
+              {/* <li><a href="#" className="hover:text-gray-300">Blog</a></li> */}
               <li><a href="#" className="hover:text-gray-300">Contact</a></li>
             </ul>
           </div>
@@ -56,15 +56,15 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center">
                 <MapPin className="w-5 h-5 mr-2" />
-                <span>123 Travel Street, City, Country</span>
+                <span>Atlanta, GA, USA</span>
               </li>
               <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-2" />
-                <span>+1 (123) 456-7890</span>
+                <span>+1 (770) 742-8333</span>
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-2" />
-                <span>info@journifyai.com</span>
+                <span>support@journifyai.com</span>
               </li>
             </ul>
           </div>
