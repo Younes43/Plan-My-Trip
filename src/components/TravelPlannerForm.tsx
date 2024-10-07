@@ -40,11 +40,6 @@ const TravelPlannerForm = () => {
     setShowCalendar(false);
   };
 
-  // const handleBudgetChange = (newValues: number[]) => {
-  //   setBudget(newValues);
-  // };
-
-  // This is a simple array of destinations. In a real app, you'd probably fetch this from an API.
   const popularDestinations = [
     'New York, USA', 'Paris, France', 'Tokyo, Japan', 'London, UK', 'Rome, Italy',
     'Sydney, Australia', 'Barcelona, Spain', 'Amsterdam, Netherlands', 'Dubai, UAE',
@@ -96,12 +91,14 @@ const TravelPlannerForm = () => {
 
   return (
     <div className="w-full max-w-6xl relative">
-      <div className="bg-white rounded-full p-2">
-        <form className="flex items-center" onSubmit={handleSubmit}>
-          <div className="flex-1 px-5 relative">
+      <div className="bg-white rounded-lg md:rounded-full p-4 md:p-2">
+        <form className="flex flex-col md:flex-row md:items-center" onSubmit={handleSubmit}>
+          <div className="flex-1 px-0 md:px-5 mb-4 md:mb-0 relative">
+            <label htmlFor="destination" className="block text-lg font-bold text-gray-700 mb-1 md:hidden">Destination</label>
             <input
-              className="w-full py-2 text-gray-700 leading-tight focus:outline-none"
-              placeholder='Where do you want to go?'
+              id="destination"
+              className="w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none border rounded-md md:border-none"
+              placeholder='Where to?'
               type="text"
               value={destination}
               onChange={handleDestinationChange}
@@ -123,10 +120,12 @@ const TravelPlannerForm = () => {
               </div>
             )}
           </div>
-          <div className="flex-1 px-5 border-l border-r relative">
+          <div className="flex-1 px-0 md:px-5 mb-4 md:mb-0 md:border-l md:border-r relative">
+            <label htmlFor="dateRange" className="block text-lg font-bold text-gray-700 mb-1 md:hidden">Duration</label>
             <button
+              id="dateRange"
               type="button"
-              className="w-full py-2 text-gray-700 leading-tight focus:outline-none bg-transparent text-left flex items-center"
+              className="w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none bg-transparent text-left flex items-center border rounded-md md:border-none"
               onClick={() => setShowCalendar(!showCalendar)}
             >
               <Calendar className="w-5 h-5 mr-3 text-[#4A0E78]" />
@@ -162,10 +161,12 @@ const TravelPlannerForm = () => {
               </div>
             )}
           </div>
-          <div className="flex-1 px-5 relative">
+          <div className="flex-1 px-0 md:px-5 mb-4 md:mb-0 relative">
+            <label htmlFor="budget" className="block text-lg font-bold text-gray-700 mb-1 md:hidden">Budget</label>
             <button
+              id="budget"
               type="button"
-              className="w-full py-2 text-gray-700 leading-tight focus:outline-none bg-transparent text-left flex items-center"
+              className="w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none bg-transparent text-left flex items-center border rounded-md md:border-none"
               onClick={() => setShowBudget(!showBudget)}
             >
               <DollarSign className="w-5 h-5 mr-3 text-[#4A0E78]" />
@@ -222,10 +223,11 @@ const TravelPlannerForm = () => {
             )}
           </div>
           <button
-            className="bg-[#4A0E78] text-white rounded-full p-4 hover:bg-[#3A0B5E] focus:outline-none focus:shadow-outline"
+            className="bg-[#4A0E78] text-white rounded-md md:rounded-full p-3 md:p-4 hover:bg-[#3A0B5E] focus:outline-none focus:shadow-outline w-full md:w-auto"
             type="submit"
           >
-            <Search className="w-6 h-6" />
+            <Search className="w-6 h-6 mx-auto" />
+            <span className="md:hidden ml-2">Search</span>
           </button>
         </form>
       </div>

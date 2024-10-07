@@ -75,7 +75,7 @@ const PlanContent = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">
-        <div className="relative h-[300px]">
+        <div className="relative h-[200px] sm:h-[250px] md:h-[300px]">
           <Image
             src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80"
             alt="Destination"
@@ -83,12 +83,11 @@ const PlanContent = () => {
             layout="fill"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50" />
-          <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center">Destination Detail</h1>
-            <p className="text-xl md:text-2xl mb-12 text-center">Home / Destination Detail</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-2 sm:mb-4 text-center">Trip itinerary</h1>
           </div>
         </div>
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-8 sm:py-12">
           {loading ? (
             <LoadingAnimation />
           ) : error ? (
@@ -98,7 +97,7 @@ const PlanContent = () => {
             </div>
           ) : plan ? (
             <>
-              <h2 className="text-3xl font-bold text-center mb-8">Your Travel Itinerary</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">Your Travel Itinerary</h2>
               <TripPlan plan={plan} />
             </>
           ) : null}

@@ -5,23 +5,6 @@ import { MapPin, Bed, Bus, Coffee } from 'lucide-react';
 import Image from 'next/image';
 import { TripPlan as TripPlanType } from '@/types';
 
-// interface Activity {
-//   description: string;
-//   location: string;
-// }
-
-// interface Accommodation {
-//   name: string;
-//   type: string;
-// }
-
-// interface DayPlan {
-//   day: number;
-//   date: string;
-//   activities: Activity[];
-//   transportation: string;
-// }
-
 interface TripPlanProps {
   plan: TripPlanType;
 }
@@ -42,20 +25,20 @@ const getImageForDay = (index: number) => {
 
 const TripPlan: React.FC<TripPlanProps> = ({ plan }) => {
   return (
-    <div>
+    <div className="px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
         <div className="p-4 bg-[#4A0E78] text-white">
-          <h2 className="text-2xl font-bold">Accommodation</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">Accommodation</h2>
         </div>
         <div className="p-4 flex items-center space-x-3">
-          <Bed className="w-6 h-6 text-[#4A0E78]" />
+          <Bed className="w-5 h-5 sm:w-6 sm:h-6 text-[#4A0E78]" />
           <div>
-            <p className="font-semibold text-lg">{plan.accommodation.name}</p>
-            <p className="text-gray-600">{plan.accommodation.type}</p>
+            <p className="font-semibold text-base sm:text-lg">{plan.accommodation.name}</p>
+            <p className="text-sm sm:text-base text-gray-600">{plan.accommodation.type}</p>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {plan.days.map((day, index) => (
           <motion.div
             key={day.day}
@@ -64,7 +47,7 @@ const TripPlan: React.FC<TripPlanProps> = ({ plan }) => {
             transition={{ duration: 0.5, delay: index * 0.1 }}
             className="bg-white rounded-lg shadow-lg overflow-hidden"
           >
-            <div className="relative h-48">
+            <div className="relative h-40 sm:h-48">
               <Image
                 src={getImageForDay(index)}
                 alt={`Day ${day.day} destination`}
@@ -72,18 +55,18 @@ const TripPlan: React.FC<TripPlanProps> = ({ plan }) => {
                 objectFit="cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-              <div className="absolute bottom-0 left-0 p-4 text-white">
-                <h2 className="text-2xl font-bold">Day {day.day}</h2>
-                <p className="text-sm">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              <div className="absolute bottom-0 left-0 p-3 sm:p-4 text-white">
+                <h2 className="text-xl sm:text-2xl font-bold">Day {day.day}</h2>
+                <p className="text-xs sm:text-sm">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
             </div>
-            <div className="p-4 space-y-3">
+            <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
               <div className="space-y-2">
                 {day.activities.slice(0, 2).map((activity, actIndex) => (
                   <div key={actIndex} className="flex items-start space-x-2">
                     <Coffee className="w-4 h-4 text-[#4A0E78] mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold text-sm text-gray-800">{activity.description}</p>
+                      <p className="font-semibold text-xs sm:text-sm text-gray-800">{activity.description}</p>
                       <p className="text-xs text-gray-600 flex items-center">
                         <MapPin className="w-3 h-3 mr-1 text-[#4A0E78]" /> {activity.location}
                       </p>
@@ -91,7 +74,7 @@ const TripPlan: React.FC<TripPlanProps> = ({ plan }) => {
                   </div>
                 ))}
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-700">
+              <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-700">
                 <Bus className="w-4 h-4 text-[#4A0E78] flex-shrink-0" />
                 <p>{day.transportation}</p>
               </div>
