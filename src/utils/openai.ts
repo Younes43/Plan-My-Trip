@@ -1,7 +1,5 @@
 import OpenAI from 'openai';
 import { TravelPlanRequest, TripPlan } from '@/types';
-import fs from 'fs/promises';
-import path from 'path';
 import rateLimit from './rateLimiter';
 
 const openai = new OpenAI({
@@ -15,10 +13,8 @@ const limiter = rateLimit({
     uniqueTokenPerInterval: 500, // Max 500 users per second
 });
 
-const logOpenAICall = async (logData: Record<string, unknown>) => {
-    const logPath = path.join(process.cwd(), 'logs', 'openai_calls.log');
-    const logEntry = JSON.stringify(logData, null, 2) + '\n\n';
-    await fs.appendFile(logPath, logEntry);
+const logOpenAICall = (logData: Record<string, unknown>) => {
+    console.log('OpenAI API Call:', JSON.stringify(logData, null, 2));
 };
 
 const calculateCost = (promptTokens: number, completionTokens: number) => {
