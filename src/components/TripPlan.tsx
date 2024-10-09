@@ -9,19 +9,16 @@ interface TripPlanProps {
   plan: TripPlanType;
 }
 
-const images = [
-  "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
-  "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80",
-  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
-  "https://images.unsplash.com/photo-1555992336-fb0d29498b13?w=800&q=80",
-  "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&q=80",
-  "https://images.unsplash.com/photo-1534270804882-6b5048b1c1fc?w=800&q=80",
-  "https://images.unsplash.com/photo-1522083165195-3424ed129620?w=800&q=80",
-];
+// const images = [
+//   "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
+//   "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80",
+//   "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
+//   "https://images.unsplash.com/photo-1555992336-fb0d29498b13?w=800&q=80",
+//   "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&q=80",
+//   "https://images.unsplash.com/photo-1534270804882-6b5048b1c1fc?w=800&q=80",
+//   "https://images.unsplash.com/photo-1522083165195-3424ed129620?w=800&q=80",
+// ];
 
-const getImageForDay = (index: number) => {
-  return images[index % images.length];
-};
 
 const TripPlan: React.FC<TripPlanProps> = ({ plan }) => {
   return (

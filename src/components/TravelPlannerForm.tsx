@@ -1,6 +1,6 @@
 'use client';
 import { useLoadScript, Autocomplete } from '@react-google-maps/api';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Calendar, DollarSign } from 'lucide-react';
 import { DateRange } from 'react-date-range';
 import { Range, getTrackBackground } from 'react-range';
@@ -78,9 +78,6 @@ const TravelPlannerForm = () => {
             )}
             {isLoaded ? (
               <Autocomplete
-                onLoad={(autocomplete) => {
-                  // You can store the autocomplete instance here if needed
-                }}
                 onPlaceChanged={() => {
                   const autocomplete = document.getElementById('destination') as HTMLInputElement;
                   if (autocomplete) {
