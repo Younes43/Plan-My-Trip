@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { TravelPlanRequest, TripPlan } from '@/types';
 import rateLimit from './rateLimiter';
+import { getPlacePhoto } from './googlePlaces';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -21,6 +22,18 @@ const calculateCost = (promptTokens: number, completionTokens: number) => {
     const promptPricePerToken = 0.00000015;
     const completionPricePerToken = 0.0000006;
     return (promptTokens * promptPricePerToken) + (completionTokens * completionPricePerToken);
+};
+
+// Define the getDefaultImage function
+const getDefaultImage = (index: number) => {
+    const defaultImages = [
+        "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
+        "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80",
+        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
+        "https://images.unsplash.com/photo-1555992336-fb0d29498b13?w=800&q=80",
+        "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&q=80",
+    ];
+    return defaultImages[index % defaultImages.length];
 };
 
 export async function generateTravelPlan(request: TravelPlanRequest): Promise<TripPlan> {
@@ -101,6 +114,12 @@ export async function generateTravelPlan(request: TravelPlanRequest): Promise<Tr
 
         // Attempt to parse the cleaned content
         const parsedContent = JSON.parse(cleanedContent);
+
+        // Fetch images for each day's location
+        for (const day of parsedContent.days) {
+            const locationImage = await getPlacePhoto(day.activities[0].location);
+            day.image = locationImage || getDefaultImage(day.day - 1); // Fallback to default image if no Google image is found
+        }
 
         return parsedContent as TripPlan;
     } catch (error) {

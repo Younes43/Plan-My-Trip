@@ -49,7 +49,7 @@ const TripPlan: React.FC<TripPlanProps> = ({ plan }) => {
           >
             <div className="relative h-40 sm:h-48">
               <Image
-                src={getImageForDay(index)}
+                src={day.image}
                 alt={`Day ${day.day} destination`}
                 layout="fill"
                 objectFit="cover"

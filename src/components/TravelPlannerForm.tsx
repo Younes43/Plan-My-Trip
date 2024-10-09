@@ -1,5 +1,5 @@
 'use client';
-
+import { useLoadScript, Autocomplete } from '@react-google-maps/api';
 import { useState, useRef, useEffect } from 'react';
 import { Search, Calendar, DollarSign } from 'lucide-react';
 import { DateRange } from 'react-date-range';
@@ -21,9 +21,6 @@ const TravelPlannerForm = () => {
   ]);
   const [budget, setBudget] = useState([500, 5000]);
   const [destination, setDestination] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const suggestionRef = useRef<HTMLDivElement>(null);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -40,46 +37,6 @@ const TravelPlannerForm = () => {
     setShowCalendar(false);
   };
 
-  const popularDestinations = [
-    'New York, USA', 'Paris, France', 'Tokyo, Japan', 'London, UK', 'Rome, Italy',
-    'Sydney, Australia', 'Barcelona, Spain', 'Amsterdam, Netherlands', 'Dubai, UAE',
-    'Singapore', 'Hong Kong', 'Berlin, Germany', 'Prague, Czech Republic', 'Vienna, Austria',
-    'Bangkok, Thailand', 'Istanbul, Turkey', 'Rio de Janeiro, Brazil', 'Cape Town, South Africa'
-  ];
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleDestinationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setDestination(value);
-    if (value.length > 0) {
-      const filtered = popularDestinations.filter(dest => 
-        dest.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setDestination(suggestion);
-    setShowSuggestions(false);
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const startDate = dateRange[0].startDate.toISOString().split('T')[0];
@@ -89,35 +46,67 @@ const TravelPlannerForm = () => {
     router.push(`/plan?destination=${encodeURIComponent(destination)}&startDate=${startDate}&endDate=${endDate}&budgetMin=${budgetMin}&budgetMax=${budgetMax}`);
   };
 
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries: ['places'],
+  });
+
+  const [showLoadError, setShowLoadError] = useState(false);
+
+  useEffect(() => {
+    if (loadError) {
+      const timer = setTimeout(() => {
+        setShowLoadError(true);
+      }, 2000); // 2 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [loadError]);
+
+  if (loadError) return <div>Error loading Google Maps. Please refresh the page.</div>;
+  if (!isLoaded) return <div>Loading...</div>;
+
   return (
     <div className="w-full max-w-6xl relative">
       <div className="bg-white rounded-lg md:rounded-full p-4 md:p-2">
         <form className="flex flex-col md:flex-row md:items-center" onSubmit={handleSubmit}>
           <div className="flex-1 px-0 md:px-5 mb-4 md:mb-0 relative">
-            <label htmlFor="destination" className="block text-lg font-bold text-gray-700 mb-1 md:hidden">Destination</label>
-            <input
-              id="destination"
-              className="w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none border rounded-md md:border-none"
-              placeholder='Where to?'
-              type="text"
-              value={destination}
-              onChange={handleDestinationChange}
-            />
-            {showSuggestions && suggestions.length > 0 && (
-              <div 
-                ref={suggestionRef}
-                className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto"
-              >
-                {suggestions.map((suggestion, index) => (
-                  <div 
-                    key={index}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </div>
-                ))}
+            {showLoadError && (
+              <div className="text-red-500 text-sm mb-2">
+                Error loading Google Maps. Please refresh the page.
               </div>
+            )}
+            {isLoaded ? (
+              <Autocomplete
+                onLoad={(autocomplete) => {
+                  // You can store the autocomplete instance here if needed
+                }}
+                onPlaceChanged={() => {
+                  const autocomplete = document.getElementById('destination') as HTMLInputElement;
+                  if (autocomplete) {
+                    const place = autocomplete.value;
+                    setDestination(place);
+                  }
+                }}
+              >
+                <input
+                  id="destination"
+                  className="w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none border rounded-md md:border-none"
+                  placeholder='Where to?'
+                  type="text"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                />
+              </Autocomplete>
+            ) : (
+              <input
+                id="destination"
+                className="w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none border rounded-md md:border-none"
+                placeholder='Where to?'
+                type="text"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+              />
             )}
           </div>
           <div className="flex-1 px-0 md:px-5 mb-4 md:mb-0 md:border-l md:border-r relative">

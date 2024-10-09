@@ -13,6 +13,7 @@ export interface DayPlan {
     date: string;
     activities: Activity[];
     transportation: string;
+    image: string;
 }
 
 export interface TripPlan {
