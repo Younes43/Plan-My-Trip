@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: journify-ai-service
+spec:
+  selector:
+    app: journify-ai
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

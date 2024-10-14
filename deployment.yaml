@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: journify-ai-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: journify-ai
+  template:
+    metadata:
+      labels:
+        app: journify-ai
+    spec:
+      containers:
+      - name: journify-ai
+        image: younes43/journify-ai:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: journify-ai-secrets
+              key: google-maps-api-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: journify-ai-secrets
+              key: openai-api-key
+        - name: GOOGLE_PLACES_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: journify-ai-secrets
+              key: google-places-api-key

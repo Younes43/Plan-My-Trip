@@ -3,6 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
+    image: younes43/journify-ai
     ports:
       - "3000:3000"
     environment:
