@@ -1,4 +1,3 @@
-import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const Header = () => {
@@ -11,12 +10,16 @@ const Header = () => {
     }
   };
 
+  const refreshHome = () => {
+    window.location.href = '/';
+  };
+
   return (
     <header className="bg-white py-4 fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <div 
           className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => router.push('/')}
+          onClick={refreshHome}
         >
           <svg
             className="w-8 h-8 text-[#4A0E78]"
@@ -50,9 +53,9 @@ const Header = () => {
             Contact
           </button>
         </nav>
-        <button className="p-2 rounded-full bg-[#4A0E78] text-white">
+        {/* <button className="p-2 rounded-full bg-[#4A0E78] text-white">
           <Search className="w-5 h-5" />
-        </button>
+        </button> */}
       </div>
     </header>
   );
