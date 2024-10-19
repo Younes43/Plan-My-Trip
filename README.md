@@ -36,7 +36,6 @@ To run Journey AI locally, follow these steps:
    Create a `.env.local` file in the root directory and add your API keys:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
-   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
    GOOGLE_PLACES_API_KEY=your_google_places_api_key_here
    ```
 
@@ -58,7 +57,7 @@ To run the application using Docker:
 
 2. Run the Docker container:
    ```
-   docker run -p 3000:3000 -e OPENAI_API_KEY=your_openai_api_key -e NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key -e GOOGLE_PLACES_API_KEY=your_google_places_api_key younes43/journify-ai:latest
+   docker run -p 3000:3000 -e OPENAI_API_KEY=your_openai_api_key -e GOOGLE_PLACES_API_KEY=your_google_places_api_key younes43/journify-ai:latest
    ```
 
 ## Kubernetes
