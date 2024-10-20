@@ -50,6 +50,7 @@ const TravelPlannerForm = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY as string,
     libraries: ['places'],
   });
+  console.log('Google Places API Key is', process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY);
 
   const [showLoadError, setShowLoadError] = useState(false);
 

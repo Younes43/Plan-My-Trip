@@ -17,9 +17,6 @@ ENV OPENAI_MODEL="gpt-4o-mini"
 
 RUN npm run build
 
-# Remove the environment variable to prevent it from being in the final image layers
-RUN rm -rf /usr/src/app/.env
-RUN unset NEXT_PUBLIC_GOOGLE_PLACES_API_KEY
 
 # Production image
 FROM node:18-alpine
