@@ -1,6 +1,4 @@
 'use client';
-
-import { useEffect, useRef } from 'react';
 import Lottie from 'lottie-react';
 import animationData from '@/animations/Animation_loading_plan.json';
 
