@@ -3,9 +3,7 @@ import { TravelPlanRequest, TripPlan } from '@/types';
 import rateLimit from './rateLimiter';
 import { getPlacePhoto } from './googlePlaces';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+
 
 const MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
@@ -39,6 +37,9 @@ const getDefaultImage = (index: number) => {
 export async function generateTravelPlan(request: TravelPlanRequest): Promise<TripPlan> {
     const { destination, startDate, endDate, budgetMin, budgetMax } = request;
 
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
     const startTime = Date.now();
     try {
         // Check rate limit

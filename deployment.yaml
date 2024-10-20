@@ -23,7 +23,7 @@ spec:
             secretKeyRef:
               name: journify-ai-secrets
               key: openai-api-key
-        - name: GOOGLE_PLACES_API_KEY
+        - name: NEXT_PUBLIC_GOOGLE_PLACES_API_KEY
           valueFrom:
             secretKeyRef:
               name: journify-ai-secrets

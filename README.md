@@ -36,7 +36,8 @@ To run Journey AI locally, follow these steps:
    Create a `.env.local` file in the root directory and add your API keys:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
-   GOOGLE_PLACES_API_KEY=your_google_places_api_key_here
+   NEXT_PUBLIC_GOOGLE_PLACES_API_KEY=your_client_side_google_places_api_key_here
+   GOOGLE_PLACES_API_KEY=your_server_side_google_places_api_key_here
    ```
 
 4. Run the development server:

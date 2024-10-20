@@ -47,7 +47,7 @@ const TravelPlannerForm = () => {
   };
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_PLACES_API_KEY as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY as string,
     libraries: ['places'],
   });
 
