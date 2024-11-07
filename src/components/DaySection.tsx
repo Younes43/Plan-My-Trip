@@ -5,7 +5,6 @@ import { Place, DayPlan } from '@/types';
 
 interface DaySectionProps {
   day: DayPlan;
-  
 }
 
 const PlaceCard = ({ place }: { place: Place }) => {
@@ -21,8 +20,8 @@ const PlaceCard = ({ place }: { place: Place }) => {
         isRestaurant ? 'bg-amber-50' : 'bg-purple-50'
       }`}
     >
-      <div className="flex h-48">
-        <div className="w-1/3 relative">
+      <div className="flex flex-col sm:flex-row h-auto sm:h-48">
+        <div className="w-full sm:w-1/3 h-48 sm:h-auto relative">
           <Image
             src={place.image || '/default-place.jpg'}
             alt={place.name}
@@ -35,7 +34,7 @@ const PlaceCard = ({ place }: { place: Place }) => {
             </div>
           )}
         </div>
-        <div className="w-2/3 p-4 flex flex-col">
+        <div className="w-full sm:w-2/3 p-4 flex flex-col">
           <div className="flex items-start justify-between mb-3">
             <span className={`text-xs px-2 py-0.5 rounded-full ${
               isRestaurant ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-purple-800'
@@ -49,9 +48,9 @@ const PlaceCard = ({ place }: { place: Place }) => {
             )}
           </div>
 
-          <div className="flex-grow space-y-2 min-h-0">
+          <div className="flex-grow space-y-2">
             <h4 className="font-bold text-gray-900 text-lg line-clamp-1">{place.name}</h4>
-            <p className="text-gray-600 text-sm line-clamp-2 mb-2">{place.description}</p>
+            <p className="text-gray-600 text-sm line-clamp-2">{place.description}</p>
           </div>
 
           <div className="mt-auto pt-2 space-y-1.5">
@@ -103,8 +102,8 @@ const DaySection: React.FC<DaySectionProps> = ({ day }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Places & Activities</h3>
           <div className="space-y-4">
             {attractions.map((place: Place, i: number) => (
@@ -113,13 +112,11 @@ const DaySection: React.FC<DaySectionProps> = ({ day }) => {
           </div>
         </div>
         
-        <div className="col-span-1 border-l pl-6">
+        <div className="lg:border-l lg:pl-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Dining</h3>
           <div className="space-y-4">
             {restaurants.map((place: Place, i: number) => (
-              <div key={i}>
-                <PlaceCard place={place} />
-              </div>
+              <PlaceCard key={i} place={place} />
             ))}
           </div>
         </div>
@@ -133,4 +130,4 @@ const DaySection: React.FC<DaySectionProps> = ({ day }) => {
   );
 };
 
-export default DaySection; 
+export default DaySection;
