@@ -12,6 +12,6 @@ export const aiConfig: AIConfig = {
     provider: (process.env.AI_PROVIDER as AIProvider) || 'openai',
     models: {
         openai: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-        gemini: 'gemini-pro'
+        gemini: process.env.GEMINI_MODEL || 'gemini-1.5-pro'
     }
 };
