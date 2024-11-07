@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import TravelPlannerForm from './TravelPlannerForm';
+import mountainImage from '@/images/mountain_image.jpg';
 
 const HeroSection = () => {
   return (
@@ -7,7 +8,7 @@ const HeroSection = () => {
       <Image
         alt="Mountain landscape"
         className="absolute inset-0 w-full h-full object-cover"
-        src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80"
+        src={mountainImage}
         layout="fill"
         priority
       />

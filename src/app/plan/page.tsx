@@ -1,55 +1,55 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense, useCallback } from 'react';
+import { useSearchParams, ReadonlyURLSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import TripPlan from '@/components/TripPlan';
 import LoadingAnimation from '@/components/LoadingAnimation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { TripPlan as TripPlanType, TravelPlanRequest } from '@/types';
+import { TripPlan as TripPlanType } from '@/types';
 import Image from 'next/image';
 
-const useGeneratePlan = (searchParams: URLSearchParams) => {
+const useGeneratePlan = (searchParams: ReadonlyURLSearchParams) => {
   const [plan, setPlan] = useState<TripPlanType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const generatePlan = async () => {
-      setLoading(true);
-      setError(null);
+  const generatePlanWithRetry = useCallback(async (retries = 3) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        const request: TravelPlanRequest = {
-          destination: searchParams.get('destination') || '',
-          startDate: searchParams.get('startDate') || '',
-          endDate: searchParams.get('endDate') || '',
-          budgetMin: Number(searchParams.get('budgetMin')) || 0,
-          budgetMax: Number(searchParams.get('budgetMax')) || 0,
-        };
-
         const response = await fetch('/api/generatePlan', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(request),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            destination: searchParams.get('destination'),
+            startDate: searchParams.get('startDate'),
+            endDate: searchParams.get('endDate'),
+            budgetMin: Number(searchParams.get('budgetMin')),
+            budgetMax: Number(searchParams.get('budgetMax'))
+          }),
         });
 
         if (!response.ok) {
-          throw new Error('Failed to generate plan');
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
         setPlan(data.plan);
+        return;
       } catch (error) {
-        console.error('Error generating plan:', error);
-        setError('An error occurred while generating your travel plan. Please try again.');
-      } finally {
-        setLoading(false);
+        console.error(`Attempt ${attempt} failed:`, error);
+        if (attempt === retries) {
+          setError(error instanceof Error ? error.message : 'Unable to generate travel plan. Please try again.');
+          throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
       }
-    };
+    }
+  }, [searchParams]);
 
+  useEffect(() => {
     if (
       searchParams.get('destination') &&
       searchParams.get('startDate') &&
@@ -57,12 +57,12 @@ const useGeneratePlan = (searchParams: URLSearchParams) => {
       searchParams.get('budgetMin') &&
       searchParams.get('budgetMax')
     ) {
-      generatePlan();
+      generatePlanWithRetry().finally(() => setLoading(false));
     } else {
       setLoading(false);
-      setError('Missing required parameters. Please fill out all fields in the form.');
+      setError('Missing required parameters');
     }
-  }, [searchParams]);
+  }, [searchParams, generatePlanWithRetry]);
 
   return { plan, loading, error };
 };

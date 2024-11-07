@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { TravelPlanRequest, TripPlan } from '@/types';
 import rateLimit from './rateLimiter';
-import { getPlacePhoto } from './googlePlaces';
+import { getPlacePhoto, getDefaultImage } from './googlePlaces';
 
 
 
@@ -22,19 +22,7 @@ const calculateCost = (promptTokens: number, completionTokens: number) => {
     return (promptTokens * promptPricePerToken) + (completionTokens * completionPricePerToken);
 };
 
-// Define the getDefaultImage function
-const getDefaultImage = (index: number) => {
-    const defaultImages = [
-        "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
-        "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80",
-        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
-        "https://images.unsplash.com/photo-1555992336-fb0d29498b13?w=800&q=80",
-        "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&q=80",
-    ];
-    return defaultImages[index % defaultImages.length];
-};
-
-export async function generateTravelPlan(request: TravelPlanRequest): Promise<TripPlan> {
+export async function generateWithOpenAI(request: TravelPlanRequest): Promise<TripPlan> {
     const { destination, startDate, endDate, budgetMin, budgetMax } = request;
 
     const openai = new OpenAI({
@@ -50,12 +38,18 @@ export async function generateTravelPlan(request: TravelPlanRequest): Promise<Tr
             messages: [
                 {
                     role: "system",
-                    content: `You are a helpful travel planner assistant. Provide a day-by-day itinerary including suggestions for activities and transportation. Suggest a single accommodation for the entire trip. The suggestions should be flexible and not force specific timings on the user. Format your response as a JSON object without any additional formatting or comments. Use the following structure:
+                    content: `You are a helpful travel planner assistant. Provide a day-by-day itinerary including suggestions for activities and transportation. Suggest three different accommodation options with varying price points. Format your response as a JSON object without any additional formatting or comments. Use the following structure:
             {
-              "accommodation": {
-                "name": "Accommodation name",
-                "type": "Hotel/Hostel/Airbnb"
-              },
+              "accommodations": [
+                {
+                  "name": "Hotel name",
+                  "type": "Hotel/Hostel/Airbnb",
+                  "rating": 4.5,
+                  "pricePerNight": 150,
+                  "description": "Brief description of the accommodation",
+                  "amenities": ["WiFi", "Pool", "Breakfast included"]
+                }
+              ],
               "days": [
                 {
                   "day": 1,

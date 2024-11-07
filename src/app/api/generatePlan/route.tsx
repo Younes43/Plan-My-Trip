@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { generateTravelPlan } from '@/utils/openai';
+import { generateTravelPlan } from '@/utils/ai-service';
 import { TravelPlanRequest } from '@/types';
 
 const logApiRequest = (logData: Record<string, unknown>) => {
@@ -8,11 +8,13 @@ const logApiRequest = (logData: Record<string, unknown>) => {
 
 export async function POST(request: Request): Promise<Response> {
   const startTime = Date.now();
+  let requestBody = {};
   
   try {
-    const body: TravelPlanRequest = await request.json();
+    requestBody = await request.json();
+    const body = requestBody as TravelPlanRequest;
     const plan = await generateTravelPlan(body);
-    
+
     const endTime = Date.now();
     const duration = endTime - startTime;
 
@@ -27,8 +29,8 @@ export async function POST(request: Request): Promise<Response> {
     };
 
     logApiRequest(logData);
-
     return NextResponse.json({ plan });
+
   } catch (error) {
     console.error('Error generating plan:', error);
 
@@ -39,7 +41,7 @@ export async function POST(request: Request): Promise<Response> {
       timestamp: new Date().toISOString(),
       endpoint: '/api/generatePlan',
       method: 'POST',
-      input: await request.json().catch(() => ({})),
+      input: requestBody,
       error: error instanceof Error ? error.message : String(error),
       statusCode: 500,
       success: false,
@@ -47,7 +49,9 @@ export async function POST(request: Request): Promise<Response> {
     };
 
     logApiRequest(logData);
-
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Internal Server Error' }, 
+      { status: 500 }
+    );
   }
 }
