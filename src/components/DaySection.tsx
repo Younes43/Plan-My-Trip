@@ -76,6 +76,20 @@ const PlaceCard = ({ place }: { place: Place }) => {
 };
 
 const DaySection: React.FC<DaySectionProps> = ({ day }) => {
+  const formatDate = (dateString: string) => {
+    // Create date object from the ISO string
+    const date = new Date(dateString);
+    // Set to noon UTC to avoid timezone issues
+    date.setUTCHours(12, 0, 0, 0);
+    
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC'  // Force UTC timezone
+    });
+  };
+
   const attractions = day.places.filter((p: Place) => p.type === 'attraction').slice(0, 2);
   const restaurants = day.places.filter((p: Place) => p.type === 'restaurant').slice(0, 2);
 
@@ -93,11 +107,7 @@ const DaySection: React.FC<DaySectionProps> = ({ day }) => {
         <div className="ml-4">
           <h2 className="text-xl font-bold text-gray-900">Day {day.day}</h2>
           <p className="text-sm text-gray-600">
-            {new Date(day.date).toLocaleDateString('en-US', {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric'
-            })}
+            {formatDate(day.date)}
           </p>
         </div>
       </div>

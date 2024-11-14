@@ -1,16 +1,11 @@
 import OpenAI from 'openai';
 import { TravelPlanRequest, TripPlan } from '@/types';
-import rateLimit from './rateLimiter';
 import { getPlacePhoto, getDefaultImage } from './googlePlaces';
 
 
 
 const MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
-const limiter = rateLimit({
-    interval: 60 * 1000, // 1 minute
-    uniqueTokenPerInterval: 500, // Max 500 users per second
-});
 
 const logOpenAICall = (logData: Record<string, unknown>) => {
     console.log('OpenAI API Call:', JSON.stringify(logData, null, 2));
@@ -22,16 +17,23 @@ const calculateCost = (promptTokens: number, completionTokens: number) => {
     return (promptTokens * promptPricePerToken) + (completionTokens * completionPricePerToken);
 };
 
-export async function generateWithOpenAI(request: TravelPlanRequest): Promise<TripPlan> {
-    const { destination, startDate, endDate, budgetMin, budgetMax } = request;
+export async function generateWithOpenAI(request: TravelPlanRequest & {
+    formattedStartDate: string;
+    formattedEndDate: string;
+}): Promise<TripPlan> {
+    const {
+        destination,
+        formattedStartDate,
+        formattedEndDate,
+        budgetMin,
+        budgetMax
+    } = request;
 
     const openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
     });
     const startTime = Date.now();
     try {
-        // Check rate limit
-        await limiter.check(20, 'OPENAI_API_CALL') // 5 requests per minute
 
         const completion = await openai.chat.completions.create({
             model: MODEL,
@@ -67,7 +69,7 @@ export async function generateWithOpenAI(request: TravelPlanRequest): Promise<Tr
                 },
                 {
                     role: "user",
-                    content: `Create a flexible travel plan for a trip to ${destination} from ${startDate} to ${endDate} with a budget range of ${budgetMin} to ${budgetMax}. Include daily activity suggestions and transportation options. Suggest a single accommodation for the entire trip. The plan should be adaptable and not impose strict timings on the traveler.`
+                    content: `Create a flexible travel plan for a trip to ${destination} from ${formattedStartDate} to ${formattedEndDate} with a budget range of ${budgetMin} to ${budgetMax}. Include daily activity suggestions and transportation options. Suggest a single accommodation for the entire trip. The plan should be adaptable and not impose strict timings on the traveler.`
                 }
             ],
         });
@@ -83,8 +85,8 @@ export async function generateWithOpenAI(request: TravelPlanRequest): Promise<Tr
             timestamp: new Date().toISOString(),
             input: {
                 destination,
-                startDate,
-                endDate,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
                 budgetMin,
                 budgetMax
             },

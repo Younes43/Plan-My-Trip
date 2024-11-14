@@ -1,28 +1,40 @@
 import { LRUCache } from 'lru-cache';
 
-type Options = {
-    uniqueTokenPerInterval?: number
-    interval?: number
+interface RateLimitConfig {
+    interval: number;  // in milliseconds
+    maxRequests: number;
 }
 
-export default function rateLimit(options?: Options) {
-    const tokenCache = new LRUCache({
-        max: options?.uniqueTokenPerInterval || 500,
-        ttl: options?.interval || 60000,
-    })
-
-    return {
-        check: (limit: number, token: string) =>
-            new Promise<void>((resolve, reject) => {
-                const tokenCount = (tokenCache.get(token) as number[]) || [0]
-                if (tokenCount[0] === 0) {
-                    tokenCache.set(token, [1])
-                } else if (tokenCount[0] === limit) {
-                    reject(new Error('Rate limit exceeded'))
-                } else {
-                    tokenCache.set(token, [tokenCount[0] + 1])
-                }
-                resolve()
-            }),
+const rateLimits: Record<string, RateLimitConfig> = {
+    TRAVEL_PLAN: {
+        interval: 60 * 1000, // 1 minute
+        maxRequests: 5
+    },
+    GOOGLE_PLACES: {
+        interval: 60 * 1000,
+        maxRequests: 100  // Adjust based on your Google Places API quota
+    },
+    OPENAI: {
+        interval: 60 * 1000,
+        maxRequests: 20
     }
+};
+
+const tokenCache = new LRUCache({
+    max: 500,
+    ttl: 60 * 1000 // 1 minute
+});
+
+export async function checkRateLimit(key: string, identifier: string): Promise<void> {
+    const limit = rateLimits[key];
+    if (!limit) throw new Error(`Unknown rate limit key: ${key}`);
+
+    const tokenKey = `${key}:${identifier}`;
+    const currentRequests = (tokenCache.get(tokenKey) as number) || 0;
+
+    if (currentRequests >= limit.maxRequests) {
+        throw new Error(`Rate limit exceeded ${key} : ${limit.maxRequests},  Please try after a while.`);
+    }
+
+    tokenCache.set(tokenKey, currentRequests + 1);
 }

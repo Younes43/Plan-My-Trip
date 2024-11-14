@@ -9,18 +9,31 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { TripPlan as TripPlanType } from '@/types';
 import Image from 'next/image';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const useGeneratePlan = (searchParams: ReadonlyURLSearchParams) => {
+  const { user } = useAuth();
   const [plan, setPlan] = useState<TripPlanType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const generatePlanWithRetry = useCallback(async (retries = 3) => {
+    if (!user) {
+      router.push('/');
+      return;
+    }
+
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
+        const idToken = await user.getIdToken();
         const response = await fetch('/api/generatePlan', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          },
           body: JSON.stringify({
             destination: searchParams.get('destination'),
             startDate: searchParams.get('startDate'),
@@ -30,16 +43,29 @@ const useGeneratePlan = (searchParams: ReadonlyURLSearchParams) => {
           }),
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+          if (response.status >= 400 && response.status < 500) {
+            setError(data.error || `Error: ${response.status}`);
+            throw new Error(data.error || `HTTP error! status: ${response.status}`);
+          }
+          throw new Error(data.error || `HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
         setPlan(data.plan);
         return;
       } catch (error) {
         console.error(`Attempt ${attempt} failed:`, error);
+        
+        if (error instanceof Error && 
+            (error.message.includes('Trip duration') || 
+             error.message.includes('budget') ||
+             error.message.includes('Missing required'))) {
+          setError(error.message);
+          throw error;
+        }
+
         if (attempt === retries) {
           setError(error instanceof Error ? error.message : 'Unable to generate travel plan. Please try again.');
           throw error;
@@ -47,7 +73,7 @@ const useGeneratePlan = (searchParams: ReadonlyURLSearchParams) => {
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
       }
     }
-  }, [searchParams]);
+  }, [searchParams, user, router]);
 
   useEffect(() => {
     if (

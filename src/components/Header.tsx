@@ -1,7 +1,14 @@
+'use client';
+
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import SignInModal from './SignInModal';
 
 const Header = () => {
   const router = useRouter();
+  const { user, signOut } = useAuth();
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
@@ -12,6 +19,13 @@ const Header = () => {
 
   const refreshHome = () => {
     window.location.href = '/';
+  };
+
+  // Function to get display name
+  const getDisplayName = () => {
+    if (!user) return '';
+    if (user.isAnonymous) return 'Guest';
+    return user.displayName || user.email?.split('@')[0] || 'User';
   };
 
   return (
@@ -53,10 +67,35 @@ const Header = () => {
             Contact
           </button>
         </nav>
-        {/* <button className="p-2 rounded-full bg-[#4A0E78] text-white">
-          <Search className="w-5 h-5" />
-        </button> */}
+        <div className="flex items-center space-x-4">
+          {user ? (
+            <>
+              <span className="text-gray-600">
+                Welcome, {getDisplayName()}
+              </span>
+              <button
+                onClick={() => signOut()}
+                className="text-white bg-[#4A0E78] px-4 py-2 rounded-md hover:bg-[#3A0B5E]"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setShowSignInModal(true)}
+              className="text-white bg-[#4A0E78] px-4 py-2 rounded-md hover:bg-[#3A0B5E]"
+            >
+              Sign In
+            </button>
+          )}
+        </div>
       </div>
+
+      <SignInModal 
+        isOpen={showSignInModal} 
+        onClose={() => setShowSignInModal(false)}
+        showAuthMessage={false}
+      />
     </header>
   );
 };
