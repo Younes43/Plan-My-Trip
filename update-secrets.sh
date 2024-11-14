@@ -1,34 +1,23 @@
 #!/bin/bash
 
-# Read .env.local file
-if [ ! -f .env.local ]; then
-    echo "Error: .env.local file not found"
-    exit 1
-fi
+# Service account email
+SERVICE_ACCOUNT="576937573011-compute@developer.gserviceaccount.com"
 
-# Function to update a secret
-update_secret() {
+# Function to update secret permissions
+update_secret_permissions() {
     local secret_name=$1
-    local secret_value=$2
+    echo "Updating permissions for secret: $secret_name"
     
-    echo "Updating secret: $secret_name"
-    echo -n "$secret_value" | gcloud secrets versions add "$secret_name" --data-file=- 2>/dev/null || \
-    (gcloud secrets create "$secret_name" --replication-policy="automatic" && \
-     echo -n "$secret_value" | gcloud secrets versions add "$secret_name" --data-file=-)
+    # Add secretmanager.secretAccessor role to the service account
+    gcloud secrets add-iam-policy-binding $secret_name \
+        --member="serviceAccount:$SERVICE_ACCOUNT" \
+        --role="roles/secretmanager.secretAccessor"
 }
 
-# Read each line from .env.local and update secrets
-while IFS='=' read -r key value; do
-    # Skip empty lines and comments
-    if [ -z "$key" ] || [[ $key == \#* ]]; then
-        continue
-    fi
-    
-    # Remove any quotes from the value
-    value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//")
-    
-    # Update the secret
-    update_secret "$key" "$value"
-done < .env.local
+# Get all secrets and update their permissions
+secrets=$(gcloud secrets list --format="value(name)")
+for secret in $secrets; do
+    update_secret_permissions $secret
+done
 
-echo "All secrets have been updated!"
+echo "All secret permissions have been updated!"
