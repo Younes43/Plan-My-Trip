@@ -1,5 +1,5 @@
 steps:
-  # Build Step
+  # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args:
@@ -8,81 +8,70 @@ steps:
         docker build \
           --no-cache \
           --build-arg NEXT_PUBLIC_GOOGLE_PLACES_API_KEY=$$NEXT_PUBLIC_GOOGLE_PLACES_API_KEY \
+          --build-arg NEXT_PUBLIC_FIREBASE_API_KEY=$$NEXT_PUBLIC_FIREBASE_API_KEY \
+          --build-arg NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=$$NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN \
+          --build-arg NEXT_PUBLIC_FIREBASE_PROJECT_ID=$$NEXT_PUBLIC_FIREBASE_PROJECT_ID \
+          --build-arg NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=$$NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET \
+          --build-arg NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=$$NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID \
+          --build-arg NEXT_PUBLIC_FIREBASE_APP_ID=$$NEXT_PUBLIC_FIREBASE_APP_ID \
           -t $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA \
           . -f Dockerfile
     secretEnv:
-      - NEXT_PUBLIC_GOOGLE_PLACES_API_KEY
-    id: Build
+      - 'NEXT_PUBLIC_GOOGLE_PLACES_API_KEY'
+      - 'NEXT_PUBLIC_FIREBASE_API_KEY'
+      - 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN'
+      - 'NEXT_PUBLIC_FIREBASE_PROJECT_ID'
+      - 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'
+      - 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'
+      - 'NEXT_PUBLIC_FIREBASE_APP_ID'
 
-  # Push Step
-  - name: gcr.io/cloud-builders/docker
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
     args:
-      - push
-      - >-
-        $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-    id: Push
+      - 'push'
+      - $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
 
-  # Deploy Step
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
-      - run
-      - services
-      - update
-      - $_SERVICE_NAME
-      - '--platform=managed'
-      - >-
-        --image=$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-      - >-
-        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
-      - '--region=$_DEPLOY_REGION'
-      - '--quiet'
-      # Set server-side environment variables from Secret Manager
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - '--region'
+      - '${_DEPLOY_REGION}'
+      - '--platform'
+      - '${_PLATFORM}'
       - '--set-secrets'
-      - 'OPENAI_API_KEY=OPENAI_API_KEY:latest'
-      - '--set-secrets'
+      # Runtime secrets
       - 'GOOGLE_PLACES_API_KEY=GOOGLE_PLACES_API_KEY:latest'
-    id: Deploy
-    secretEnv:
-      - OPENAI_API_KEY
-      - GOOGLE_PLACES_API_KEY
-
-images:
-  - >-
-    $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - 'GEMINI_API_KEY=GEMINI_API_KEY:latest'
+      - 'OPENAI_API_KEY=OPENAI_API_KEY:latest'
+      - 'FIREBASE_ADMIN_PROJECT_ID=FIREBASE_ADMIN_PROJECT_ID:latest'
+      - 'FIREBASE_ADMIN_PRIVATE_KEY=FIREBASE_ADMIN_PRIVATE_KEY:latest'
+      - 'FIREBASE_ADMIN_CLIENT_EMAIL=FIREBASE_ADMIN_CLIENT_EMAIL:latest'
 
 availableSecrets:
   secretManager:
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_GOOGLE_PLACES_API_KEY/versions/latest'
+    # Build-time secrets (public Firebase config)
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_GOOGLE_PLACES_API_KEY/versions/latest
       env: 'NEXT_PUBLIC_GOOGLE_PLACES_API_KEY'
-    - versionName: 'projects/$PROJECT_ID/secrets/OPENAI_API_KEY/versions/latest'
-      env: 'OPENAI_API_KEY'
-    - versionName: 'projects/$PROJECT_ID/secrets/GOOGLE_PLACES_API_KEY/versions/latest'
-      env: 'GOOGLE_PLACES_API_KEY'
-    # Firebase Client secrets
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_API_KEY/versions/latest'
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_API_KEY/versions/latest
       env: 'NEXT_PUBLIC_FIREBASE_API_KEY'
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN/versions/latest'
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN/versions/latest
       env: 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN'
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_PROJECT_ID/versions/latest'
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_PROJECT_ID/versions/latest
       env: 'NEXT_PUBLIC_FIREBASE_PROJECT_ID'
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET/versions/latest'
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET/versions/latest
       env: 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID/versions/latest'
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID/versions/latest
       env: 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'
-    - versionName: 'projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_APP_ID/versions/latest'
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_FIREBASE_APP_ID/versions/latest
       env: 'NEXT_PUBLIC_FIREBASE_APP_ID'
-    
-    # Firebase Admin secrets
-    - versionName: 'projects/$PROJECT_ID/secrets/FIREBASE_ADMIN_PROJECT_ID/versions/latest'
-      env: 'FIREBASE_ADMIN_PROJECT_ID'
-    - versionName: 'projects/$PROJECT_ID/secrets/FIREBASE_ADMIN_PRIVATE_KEY/versions/latest'
-      env: 'FIREBASE_ADMIN_PRIVATE_KEY'
-    - versionName: 'projects/$PROJECT_ID/secrets/FIREBASE_ADMIN_CLIENT_EMAIL/versions/latest'
-      env: 'FIREBASE_ADMIN_CLIENT_EMAIL'
 
 options:
-  substitutionOption: ALLOW_LOOSE
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
@@ -91,7 +80,6 @@ substitutions:
   _DEPLOY_REGION: us-central1
   _AR_HOSTNAME: us-central1-docker.pkg.dev
   _PLATFORM: managed
-  _TRIGGER_ID: 586b1c24-d7d4-41ce-a4ac-57c5f6fcaa11
 
 tags:
   - gcp-cloud-build-deploy-cloud-run
